@@ -1,0 +1,98 @@
+<style>
+    #introduction { color: black; }
+/* CSS */
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    font-size: 16px;
+    border-spacing: 0;
+}
+.table {
+    display: table;
+    box-sizing: border-box;
+    border-spacing: 2px;
+    border-color: grey;
+    border-collapse: collapse;
+    width: 30px;
+    height: 30px;
+}
+.tr {
+    display: table-row;
+    border-color: inherit;
+}
+.td {
+    display: table-cell;
+    vertical-align: inherit;
+}
+.game-cell {
+    width: 27px;
+    height: 27px;
+    background: #eee;
+    overflow: hidden;
+    border-color: #000;
+    box-shadow: none;
+    text-align: center;
+    vertical-align: bottom;
+    color: black;
+    font-size: 20px;
+}
+game-cell:hover {
+    background: #fff;
+}
+.cell-weight {
+    color: #000;
+    font-size: 20px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: bottom;
+}
+.txt {
+    text-align: center;
+    vertical-align: bottom;
+}
+</style>
+
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Play
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<form method="post">
+    <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
+    <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
+    <label for="send"></label><input type="submit" class="btn btn-success" value="Send" name="send">
+    <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer"><br><br>
+     <table class="game-table">
+      <tr class="game-table__tr">
+      <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"></div>
+      </td>
+     {% for ii in range(19) %}
+            <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"> {{ ii }} </div>
+            </td>
+     {% endfor %}
+     </tr>
+     {% for ii in range(19) %}
+        <tr class="game-table__tr">
+        <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"> {{ ii }}</div>
+        </td>
+            {% for jj in range(19) %}
+            <td class="game-table__td">
+                <div class="btn-outline-secondary game-cell" id="introduction">{{ str[ii * 19 + jj] }}</div>
+            </td>
+            {% endfor %}
+        </tr>
+     {% endfor %}
+     </table>
+</form>
+</div>
+{% endblock %}

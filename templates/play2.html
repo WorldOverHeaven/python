@@ -1,0 +1,90 @@
+<style>
+/* CSS */
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    font-size: 16px;
+    border-spacing: 0;
+}
+.table {
+    display: table;
+    box-sizing: border-box;
+    border-spacing: 2px;
+    border-color: grey;
+    border-collapse: collapse;
+    width: 30px;
+    height: 30px;
+}
+.tr {
+    display: table-row;
+    border-color: inherit;
+}
+.td {
+    display: table-cell;
+    vertical-align: inherit;
+}
+.game-cell {
+    width: 30px;
+    height: 30px;
+    background: #eee;
+    overflow: hidden;
+    border-color: #000;
+    box-shadow: none;
+    text-align: justify-all;
+    vertical-align: bottom;
+}
+game-cell:hover {
+    background: #fff;
+}
+.cell-weight {
+    color: #000;
+    font-size: 20px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: bottom;
+}
+.txt {
+    text-align: center;
+    vertical-align: bottom;
+}
+</style>
+
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Play
+{% endblock %}
+
+{% block body %}
+<div class="container">
+
+{% for ii in range(19) %}
+
+    <nav class="my-0 my-md-0 mr-md-0 p-0 m-0">
+    {% for jj in range(19) %}
+        <label for="{{ ii * 19 + jj }}"></label>
+        <input value = "" type="button" name="{{ ii * 19 + jj }}" id="{{ ii * 19 + jj }}" class="btn-circle">
+    {% endfor %}
+    </nav>
+{% endfor %}
+</div>
+<div class="container">
+     <table class="game-table">
+     {% for ii in range(19) %}
+        <tr class="game-table__tr">
+            {% for jj in range(19) %}
+            <td class="game-table__td">
+                <button type="button" class="game-cell btn btn-outline-secondary" id="{{ ii*19+jj }}">
+                    0
+                </button>
+            </td>
+            {% endfor %}
+        </tr>
+     {% endfor %}
+     </table>
+</div>
+{% endblock %}
