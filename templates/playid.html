@@ -58,6 +58,10 @@ game-cell:hover {
 
 {% extends 'base.html' %}
 
+{% block head %}
+
+{% endblock %}
+
 {% block title %}
     Play
 {% endblock %}
@@ -65,10 +69,17 @@ game-cell:hover {
 {% block body %}
 <div class="container">
 <form method="post">
-    <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
-    <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
-    <label for="send"></label><input type="submit" class="btn btn-success" value="Send" name="send">
-    <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer"><br><br>
+<div> aaa {{ temp }}</div>
+        <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
+        <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
+    {% if status == 2 %}
+        <label for="send"></label><input type="submit" class="btn btn-success" value="Send" name="send">
+        <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer">
+        <label for="clear"></label><input type="submit" class="btn btn-success" value="Clear" name="clear"><br>
+    {% else %}
+        <label for="clear"></label><input type="submit" class="btn btn-success" value="End Game" name="clear"><br>
+    {% endif %}
+</form>
      <table class="game-table">
       <tr class="game-table__tr">
       <td class="game-table__td">
@@ -93,6 +104,5 @@ game-cell:hover {
         </tr>
      {% endfor %}
      </table>
-</form>
 </div>
 {% endblock %}

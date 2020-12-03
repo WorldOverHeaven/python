@@ -1,7 +1,9 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import subprocess
 import numpy as np
+import datetime as dt
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -9,10 +11,51 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+def listen_put(a, b):
+    inp = b"0 "
+    for i in range(361):
+        if a[i] == '0':
+            inp += b"-1 "
+        if a[i] == 'X':
+            inp += b"1 "
+        if a[i] == ' ':
+            inp += b"0 "
+    inp += str.encode(b)
+    args = ["/home/kirill/CLionProjects/XO4/cmake-build-debug/XO4"]
+    result = subprocess.run(args, stdout=subprocess.PIPE, input=inp, shell=True, stderr=subprocess.STDOUT)
+    s = result.stdout.decode('utf-8')
+    s = s.split()
+    ss = ""
+    for i in range(361):
+        if s[i] == '-1':
+            ss += "0"
+        if s[i] == '1':
+            ss += "X"
+        if s[i] == '0':
+            ss += " "
+    arr = [ss, s[361]]
+    return arr
+
+
+def listen_next_move(a):
+    inp = b"1 "
+    for i in range(361):
+        if a[i] == '0':
+            inp += b"-1 "
+        if a[i] == 'X':
+            inp += b"1 "
+        if a[i] == ' ':
+            inp += b"0 "
+    args = ["/home/kirill/CLionProjects/XO4/cmake-build-debug/XO4"]
+    result = subprocess.run(args, stdout=subprocess.PIPE, input=inp, shell=True, stderr=subprocess.STDOUT)
+    s = result.stdout.decode('utf-8')
+    return listen_put(a, s)
+
+
 class Field(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(361), nullable=False, default="")
-    date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.Integer, default=2)
 
     def __repr__(self):
         return '<Field %r>' % self.id
@@ -44,35 +87,75 @@ def about():
     return render_template("about.html")
 
 
+# @app.route('/play/<int:id>', methods=['GET'])
+# def reload(id):
+#     try:
+#         data = Field.query.get(id)
+#         strn = data.data
+#         status = data.status
+#     except:
+#         return "NO GAME"
+#     arr = [strn, status]
+#     return jsonify({
+#         'text': arr
+
+
 @app.route('/play/<int:id>', methods=['POST', 'GET'])
 def play_id(id):
     try:
         data = Field.query.get(id)
+        temp = dt.datetime.now()
         strn = data.data
-        print(strn)
+        status = data.status
     except:
         return "NO GAME"
     if request.method == "POST":
         try:
-            ii = int(request.form["ii"])
-            jj = int(request.form["jj"])
+            ii = request.form["ii"]
+            jj = request.form["jj"]
         except:
-            return render_template("playid.html", str=strn)
+            return redirect('/play/' + str(id))
+
         str2 = ""
         for i in range(361):
             if i != ii * 19 + jj:
                 str2 += strn[i]
             else:
                 str2 += "x"
-        strn = str2
-        data.data = strn
+        try:
+            send = request.form["send"]
+            if ii == "":
+                return redirect('/play/' + str(id))
+            if jj == "":
+                return redirect('/play/' + str(id))
+            arr = listen_put(str2, ii + " " + jj)
+            strn = arr[0]
+            data.data = strn
+            data.status = arr[1]
+        except:
+            a = 1
+        try:
+            computer = request.form["computer"]
+            arr = listen_next_move(str2)
+            strn = arr[0]
+            data.data = strn
+            data.status = arr[1]
+        except:
+            a = 1
+        try:
+            clear = request.form["clear"]
+            strn = 361 * " "
+            data.data = strn
+            data.status = 2
+        except:
+            a = 1
         try:
             db.session.commit()
-            return render_template("playid.html", str=strn)
+            return redirect('/play/' + str(id))
         except:
             return "ERROR"
     else:
-        return render_template("playid.html", str=strn)
+        return render_template("playid.html", str=strn, status=status, temp=temp)
 
 
 @app.route('/play', methods=['POST', 'GET'])
@@ -85,7 +168,6 @@ def play():
                 send = request.form["send"]
             except:
                 render_template("play.html")
-            print(ii, jj)
             return render_template("play.html")
         except:
             return "ERROR"

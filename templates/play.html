@@ -68,7 +68,9 @@ game-cell:hover {
     <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
     <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
     <label for="send"></label><input type="submit" class="btn btn-success" value="Send" name="send">
-    <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer"><br><br>
+    <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer">
+    <label for="clear"></label><input type="submit" class="btn btn-success" value="Clear" name="clear"><br>
+</form>
      <table class="game-table">
       <tr class="game-table__tr">
       <td class="game-table__td">
@@ -93,6 +95,5 @@ game-cell:hover {
         </tr>
      {% endfor %}
      </table>
-</form>
 </div>
 {% endblock %}
