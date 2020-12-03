@@ -111,6 +111,11 @@ def play_id(id):
         return "NO GAME"
     if request.method == "POST":
         try:
+            clicked = request.form["ii"]
+            print(clicked)
+        except:
+            print("no")
+        try:
             ii = request.form["ii"]
             jj = request.form["jj"]
         except:
@@ -155,7 +160,7 @@ def play_id(id):
         except:
             return "ERROR"
     else:
-        return render_template("playid.html", str=strn, status=status, temp=temp)
+        return render_template("playid.html", str=strn, status=status, temp=temp, id=id)
 
 
 @app.route('/play', methods=['POST', 'GET'])

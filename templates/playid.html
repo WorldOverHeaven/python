@@ -67,9 +67,28 @@ game-cell:hover {
 {% endblock %}
 
 {% block body %}
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script>
+   setInterval(function()
+   {
+   $("#result2").load("/play/{{ id }} #result", function() {
+   {#alert("Load");#}
+   });
+   }, 1000)
+ </script>
+    <script>
+        $(function(){
+            $(document).on('click', '.game-cell', function(){
+                    $.ajax({
+                type: 'POST',
+                url: "/play/{{ id }}",
+                data: $('form').serialize()})
+            alert('Привет мир!');
+        });
+});
+    </script>
 <div class="container">
-<form method="post">
-<div> aaa {{ temp }}</div>
+<form method="post" name="form">
         <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
         <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
     {% if status == 2 %}
@@ -80,7 +99,8 @@ game-cell:hover {
         <label for="clear"></label><input type="submit" class="btn btn-success" value="End Game" name="clear"><br>
     {% endif %}
 </form>
-     <table class="game-table">
+<div id="result2">
+     <table class="game-table" id="result">
       <tr class="game-table__tr">
       <td class="game-table__td">
                 <div class=" btn-outline-secondary game-cell" id="introduction"></div>
@@ -98,11 +118,12 @@ game-cell:hover {
         </td>
             {% for jj in range(19) %}
             <td class="game-table__td">
-                <div class="btn-outline-secondary game-cell" id="introduction">{{ str[ii * 19 + jj] }}</div>
+                <div class="btn-outline-secondary game-cell" name="{{ ii * 19 + jj }}" id="introduction">{{ str[ii * 19 + jj] }}</div>
             </td>
             {% endfor %}
         </tr>
      {% endfor %}
      </table>
+</div>
 </div>
 {% endblock %}
