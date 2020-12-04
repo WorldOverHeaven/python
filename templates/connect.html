@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Main page
+{% endblock %}
+
+{% block body %}
+ <div class = container>
+    <h1>Enter ID</h1>
+    <form method="post">
+        <label for="id"></label><input type="text" name="id" id="id" class="form-control"><br>
+        <label for="title"></label><input type="submit" class="btn btn-success" value="Connect"><br>
+    </form>
+ </div>
+{% endblock %}

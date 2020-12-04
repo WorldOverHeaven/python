@@ -1,0 +1,136 @@
+<style>
+    #introduction { color: black; }
+/* CSS */
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 10px;
+    margin: 0;
+    font-size: 16px;
+    border-spacing: 0;
+}
+.table {
+    display: table;
+    box-sizing: border-box;
+    border-spacing: 2px;
+    border-color: grey;
+    border-collapse: collapse;
+    width: 30px;
+    height: 30px;
+}
+.tr {
+    display: table-row;
+    border-color: inherit;
+}
+.td {
+    display: table-cell;
+    vertical-align: inherit;
+}
+.game-cell {
+    width: 27px;
+    height: 27px;
+    background: #eee;
+    overflow: hidden;
+    border-color: #000;
+    box-shadow: none;
+    text-align: center;
+    vertical-align: bottom;
+    color: black;
+    font-size: 20px;
+}
+game-cell:hover {
+    background: #fff;
+}
+.cell-weight {
+    color: #000;
+    font-size: 20px;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: bottom;
+}
+.txt {
+    text-align: center;
+    vertical-align: bottom;
+}
+</style>
+
+
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block title %}
+    Play
+{% endblock %}
+
+{% block body %}
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script>
+    function reload() {
+   $("#result2").load("/multiplayer{{ number }}/{{ id }} #result", function() {});
+   $("#forms2").load("/multiplayer{{ number }}/{{ id }} #forms", function() {});
+    }
+
+          setInterval(function()
+   {
+   $("#result2").load("/multiplayer{{ number }}/{{ id }} #result", function() {});
+   $("#forms2").load("/multiplayer{{ number }}/{{ id }} #forms", function() {});}, 2000)
+ </script>
+    <script>
+        $(function(){
+            $(document).on('click', '.game-cell', function(){
+                    $.ajax({
+                type: 'POST',
+                url: "/multiplayer{{ number }}/{{ id }}",
+                data: {name:$(this).attr("name")}})
+                setTimeout(reload, 100);
+        });
+});
+    </script>
+<div class="container">
+<div id="forms2">
+<form method="post" name="form" id="forms">
+    <div class="btn">ID {{ id }}</div><br>
+    {% if status == 2 %}
+    {% if step == 0 %}
+        <div class="btn btn-success" value="Your turn" name="clear">Your turn</div><br>
+    {% else %}
+        <div class="btn btn-warning" value="Waiting" name="clear">Waiting</div><br>
+    {% endif %}
+
+    {% else %}
+        <label for="clear"></label><input type="submit" class="btn btn-danger" value="Replay" name="clear"><br>
+    {% endif %}
+</form>
+</div>
+<div id="result2">
+     <table class="game-table" id="result">
+      <tr class="game-table__tr">
+      <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"></div>
+      </td>
+     {% for ii in range(19) %}
+            <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"> {{ ii }} </div>
+            </td>
+     {% endfor %}
+     </tr>
+     {% for ii in range(19) %}
+        <tr class="game-table__tr">
+        <td class="game-table__td">
+                <div class=" btn-outline-secondary game-cell" id="introduction"> {{ ii }}</div>
+        </td>
+            {% for jj in range(19) %}
+            <td class="game-table__td">
+                <div class="btn-outline-secondary game-cell" name="{{ ii * 19 + jj }}" id="introduction">{{ str[ii * 19 + jj] }}</div>
+            </td>
+            {% endfor %}
+        </tr>
+     {% endfor %}
+     </table>
+</div>
+</div>
+{% endblock %}
