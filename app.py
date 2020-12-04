@@ -19,7 +19,6 @@ def listen_put(a, b):
         if a[i] == ' ':
             inp += b"0 "
     inp += str.encode(b)
-    args = ["/home/kirill/CLionProjects/XO4/cmake-build-debug/XO4"]
     args = ["venv/XO4"]
     result = subprocess.run(args, stdout=subprocess.PIPE, input=inp, shell=True, stderr=subprocess.STDOUT)
     s = result.stdout.decode('utf-8')
