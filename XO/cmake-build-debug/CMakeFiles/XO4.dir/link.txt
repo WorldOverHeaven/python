@@ -1,0 +1,1 @@
+/usr/bin/g++  -g   CMakeFiles/XO4.dir/main.cpp.o  -o XO4 

@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kirill/CLionProjects/XO4/Field.h
+utility
+-
+string
+-
+vector
+-
+iostream
+-
+
+/home/kirill/CLionProjects/XO4/main.cpp
+Field.h
+/home/kirill/CLionProjects/XO4/Field.h
+vector
+-
+string
+-
+fstream
+-
+
