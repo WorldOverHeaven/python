@@ -87,17 +87,95 @@ def about():
     return render_template("about.html")
 
 
-# @app.route('/play/<int:id>', methods=['GET'])
-# def reload(id):
-#     try:
-#         data = Field.query.get(id)
-#         strn = data.data
-#         status = data.status
-#     except:
-#         return "NO GAME"
-#     arr = [strn, status]
-#     return jsonify({
-#         'text': arr
+@app.route('/multiplayer2/<int:id>', methods=['POST', 'GET'])
+def multiplayer2(id):
+    try:
+        number = 2
+        data = Field.query.get(id)
+        temp = dt.datetime.now()
+        strn = data.data
+        status = data.status
+        str2 = ""
+        step = 1
+        for i in range(361):
+            str2 += strn[i]
+            if strn[i] != " ":
+                step += 1
+        step = step % 2
+    except:
+        return "NO GAME"
+    if request.method == "POST":
+        try:
+            index = int(request.form["name"])
+            if strn[index] == " " and step == 0:
+                iii = str(index // 19) + " " + str(index % 19)
+                arr = listen_put(str2, iii)
+                strn = arr[0]
+                data.data = strn
+                data.status = arr[1]
+            else:
+                print("aaaaa")
+        except:
+            a = 1
+        try:
+            clear = request.form["clear"]
+            strn = 361 * " "
+            data.data = strn
+            data.status = 2
+        except:
+            a = 1
+        try:
+            db.session.commit()
+            return redirect('/multiplayer2/' + str(id))
+        except:
+            return "ERROR"
+    else:
+        return render_template("multiplayer1.html", str=strn, status=status, temp=temp, id=id, step=step, number=number)
+
+
+@app.route('/multiplayer1/<int:id>', methods=['POST', 'GET'])
+def multiplayer1(id):
+    try:
+        number = 1
+        data = Field.query.get(id)
+        temp = dt.datetime.now()
+        strn = data.data
+        status = data.status
+        str2 = ""
+        step = 0
+        for i in range(361):
+            str2 += strn[i]
+            if strn[i] != " ":
+                step += 1
+        step = step % 2
+    except:
+        return "NO GAME"
+    if request.method == "POST":
+        try:
+            index = int(request.form["name"])
+            if strn[index] == " " and step == 0:
+                print(step)
+                iii = str(index // 19) + " " + str(index % 19)
+                arr = listen_put(str2, iii)
+                strn = arr[0]
+                data.data = strn
+                data.status = arr[1]
+        except:
+            a = 1
+        try:
+            clear = request.form["clear"]
+            strn = 361 * " "
+            data.data = strn
+            data.status = 2
+        except:
+            a = 1
+        try:
+            db.session.commit()
+            return redirect('/multiplayer1/' + str(id))
+        except:
+            return "ERROR"
+    else:
+        return render_template("multiplayer1.html", str=strn, status=status, temp=temp, id=id, step=step, number=number)
 
 
 @app.route('/play/<int:id>', methods=['POST', 'GET'])
@@ -110,33 +188,17 @@ def play_id(id):
     except:
         return "NO GAME"
     if request.method == "POST":
-        try:
-            clicked = request.form["ii"]
-            print(clicked)
-        except:
-            print("no")
-        try:
-            ii = request.form["ii"]
-            jj = request.form["jj"]
-        except:
-            return redirect('/play/' + str(id))
-
         str2 = ""
         for i in range(361):
-            if i != ii * 19 + jj:
-                str2 += strn[i]
-            else:
-                str2 += "x"
+            str2 += strn[i]
         try:
-            send = request.form["send"]
-            if ii == "":
-                return redirect('/play/' + str(id))
-            if jj == "":
-                return redirect('/play/' + str(id))
-            arr = listen_put(str2, ii + " " + jj)
-            strn = arr[0]
-            data.data = strn
-            data.status = arr[1]
+            index = int(request.form["name"])
+            if strn[index] == " ":
+                iii = str(index // 19) + " " + str(index % 19)
+                arr = listen_put(str2, iii)
+                strn = arr[0]
+                data.data = strn
+                data.status = arr[1]
         except:
             a = 1
         try:
@@ -223,10 +285,22 @@ def create_article():
         return render_template("create-article.html")
 
 
+@app.route('/newgamemlt')
+def newgamemlt():
+    field = Field.query.all()
+    a = len(field)
+    try:
+        field = Field()
+        field.data = 361 * " "
+        db.session.add(field)
+        db.session.commit()
+        return redirect('/multiplayer1/' + str(a + 1))
+    except:
+        return "ERROR"
+
 @app.route('/newgame')
 def newgame():
     field = Field.query.all()
-    print(len(field))
     a = len(field)
     try:
         field = Field()
@@ -253,6 +327,15 @@ def post_update(id):
             return "ERROR"
     else:
         return render_template("post_update.html", article=article)
+
+@app.route('/connect', methods=['POST', 'GET'])
+def connect():
+    if request.method == "POST":
+        id = request.form['id']
+        return redirect("multiplayer2/" + id)
+    else:
+        return render_template("connect.html")
+
 
 
 if __name__ == '__main__':

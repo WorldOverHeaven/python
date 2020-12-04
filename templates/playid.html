@@ -69,12 +69,14 @@ game-cell:hover {
 {% block body %}
     <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
     <script>
-   setInterval(function()
-   {
-   $("#result2").load("/play/{{ id }} #result", function() {
-   {#alert("Load");#}
-   });
-   }, 1000)
+    function reload() {
+   $("#result2").load("/play/{{ id }} #result", function() {});
+   $("#forms2").load("/play/{{ id }} #forms", function() {});
+    }
+
+   {#       setInterval(function()#}
+   {#{#}
+   {#$("#result2").load("/play/{{ id }} #result", function() {});}, 100)#}
  </script>
     <script>
         $(function(){
@@ -82,23 +84,24 @@ game-cell:hover {
                     $.ajax({
                 type: 'POST',
                 url: "/play/{{ id }}",
-                data: $('form').serialize()})
-            alert('Привет мир!');
+                data: {name:$(this).attr("name")}})
+                setTimeout(reload, 50);
+                setTimeout(reload, 200);
+            {#alert($(this).attr("name"));#}
         });
 });
     </script>
 <div class="container">
-<form method="post" name="form">
-        <label for="ii"></label><input type="number" name="ii" id="ii" class="form-control"><br>
-        <label for="jj"></label><input type="number" name="jj" id="jj" class="form-control"><br>
+<div id="forms2">
+<form method="post" name="form" id="forms">
     {% if status == 2 %}
-        <label for="send"></label><input type="submit" class="btn btn-success" value="Send" name="send">
         <label for="computer"></label><input type="submit" class="btn btn-success" value="Computer" name="computer">
         <label for="clear"></label><input type="submit" class="btn btn-success" value="Clear" name="clear"><br>
     {% else %}
         <label for="clear"></label><input type="submit" class="btn btn-success" value="End Game" name="clear"><br>
     {% endif %}
 </form>
+</div>
 <div id="result2">
      <table class="game-table" id="result">
       <tr class="game-table__tr">
